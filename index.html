@@ -4,7 +4,33 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="EventGenie — AI-powered celebration and event planner for weddings, birthdays, and community events. Get smart budgets, vendor checklists, timelines, and personalized ideas." />
-  <title>EventGenie — AI Event Planner</title>
+  <meta name="theme-color" content="#F9EAD7" />
+  <title>EventGenie — AI-Powered Celebration & Event Planner</title>
+
+  <!-- Favicons -->
+  <link rel="icon" type="image/svg+xml" href="images/favicon.svg" />
+  <link rel="alternate icon" type="image/svg+xml" href="favicon.svg" />
+  <link rel="apple-touch-icon" href="images/favicon.svg" />
+
+  <!-- Open Graph / Facebook / LinkedIn / WhatsApp -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://github.com/Saurabhtbj1201/EventGenie-AI-Powered-Celebration-Event-Planner" />
+  <meta property="og:title" content="EventGenie — AI-Powered Celebration & Event Planner" />
+  <meta property="og:description" content="Plan weddings, birthdays, and community events with AI budgets, dynamic timelines, vendor checklists, and personalized themes powered by Google Gemini." />
+  <meta property="og:image" content="images/og_image.png" />
+  <meta property="og:image:type" content="image/png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="EventGenie — AI Event Planning Assistant" />
+
+  <!-- Twitter / X -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="EventGenie — AI-Powered Celebration & Event Planner" />
+  <meta name="twitter:description" content="Plan weddings, birthdays, and community events with AI budgets, dynamic timelines, vendor checklists, and personalized themes powered by Google Gemini." />
+  <meta name="twitter:image" content="images/og_image.png" />
+  <meta name="twitter:image:alt" content="EventGenie — AI Event Planning Assistant" />
+
+  <!-- Typography & Styles -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
@@ -18,7 +44,11 @@
 <header class="navbar" role="banner">
   <div class="navbar__inner">
     <a href="#" class="navbar__logo" aria-label="EventGenie home" data-nav="landing">
-      <span class="navbar__logo-icon" aria-hidden="true">✨</span>
+      <svg class="navbar__logo-svg" width="28" height="28" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <path d="M16 2L18.8 11.2L28 14L18.8 16.8L16 26L13.2 16.8L4 14L13.2 11.2L16 2Z" fill="#E10600"/>
+        <path d="M23 6L24.5 10L28.5 11.5L24.5 13L23 17L21.5 13L17.5 11.5L21.5 10L23 6Z" fill="#E34234" opacity="0.85"/>
+        <path d="M8 18L9 21L12 22L9 23L8 26L7 23L4 22L7 21L8 18Z" fill="#BFE23A"/>
+      </svg>
       <span class="navbar__logo-text">EventGenie</span>
     </a>
     <nav class="navbar__links" aria-label="Main navigation">
@@ -38,90 +68,214 @@
      VIEW 1: LANDING PAGE
 ═══════════════════════════════════════════════════════════════════════════ -->
 <section id="view-landing" class="view view--active" aria-label="Landing page">
+  <!-- Hero Section -->
   <div class="hero">
-    <!-- Decorative orbs -->
-    <div class="hero__orb hero__orb--1" aria-hidden="true"></div>
-    <div class="hero__orb hero__orb--2" aria-hidden="true"></div>
-    <div class="hero__orb hero__orb--3" aria-hidden="true"></div>
+    <div class="hero__container">
+      <div class="hero__grid">
+        <!-- Hero Left Column -->
+        <div class="hero__content">
+          <div class="hero__badge">
+            <span class="hero__badge-sparkle">✨</span>
+            <span>Powered by Google <strong class="badge-gemini-gradient">Gemini AI</strong></span>
+          </div>
+          <h1 class="hero__title">
+            Plan Your Perfect<br/>
+            <span class="text-crimson">Celebration</span> with <span class="ai-spark-group">AI <span class="hero-sparks" aria-hidden="true">彡</span></span>
+          </h1>
+          <p class="hero__subtitle">
+            From intimate birthdays to grand weddings and vibrant community events — EventGenie creates smart budgets, vendor checklists, timelines, and personalized ideas in seconds.
+          </p>
+          <div class="hero__actions">
+            <button class="btn btn--primary btn--lg" id="btn-start-planning" aria-label="Start planning your event">
+              Start Planning Free ✨
+            </button>
+            <button class="btn btn--white-pill btn--lg" data-nav="plans" onclick="window.app?.openMyPlans()">
+              <span class="play-icon-red" aria-hidden="true">▶</span> View My Plans
+            </button>
+          </div>
+        </div>
 
-    <div class="hero__content">
-      <div class="hero__badge">🤖 Powered by Google Gemini AI</div>
-      <h1 class="hero__title">Plan Your Perfect<br/><span class="hero__title-gradient">Celebration</span> with AI</h1>
-      <p class="hero__subtitle">From intimate birthdays to grand weddings and vibrant community events — EventGenie creates smart budgets, vendor checklists, timelines, and personalized ideas in seconds.</p>
-      <div class="hero__actions">
-        <button class="btn btn--primary btn--lg" id="btn-start-planning" aria-label="Start planning your event">
-          Start Planning Free ✨
-        </button>
-        <button class="btn btn--secondary btn--lg" data-nav="plans" onclick="document.querySelectorAll('[data-nav]').forEach(l=>l.classList.remove('nav__link--active')); window.app?.renderSavedPlans(); document.getElementById('view-landing').classList.remove('view--active'); document.getElementById('view-plans').classList.add('view--active')">
-          View My Plans
-        </button>
+        <!-- Hero Right Column -->
+        <div class="hero__visual">
+          <div class="hero__mockup-card">
+            <img src="images/hero_illustration.jpg" alt="EventGenie 3D AI Event Planner Illustration" class="hero__mockup-img" />
+          </div>
+        </div>
       </div>
-      <div class="hero__stats" aria-label="App statistics">
-        <div class="hero__stat"><span class="hero__stat-num">3</span><span class="hero__stat-label">Event Types</span></div>
-        <div class="hero__stat-divider" aria-hidden="true"></div>
-        <div class="hero__stat"><span class="hero__stat-num">AI</span><span class="hero__stat-label">Budget Planning</span></div>
-        <div class="hero__stat-divider" aria-hidden="true"></div>
-        <div class="hero__stat"><span class="hero__stat-num">100%</span><span class="hero__stat-label">Free to Use</span></div>
+
+      <!-- Floating Stats Bar Pill -->
+      <div class="stats-bar-wrapper">
+        <div class="stats-bar-pill">
+          <div class="stat-pill-item">
+            <div class="stat-pill-icon stat-pill-icon--coral" aria-hidden="true">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            </div>
+            <div class="stat-pill-text">
+              <span class="stat-pill-num">3</span>
+              <span class="stat-pill-label">Event Types</span>
+            </div>
+          </div>
+
+          <div class="stat-pill-item">
+            <div class="stat-pill-icon stat-pill-icon--lavender" aria-hidden="true">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>
+            </div>
+            <div class="stat-pill-text">
+              <span class="stat-pill-num">AI</span>
+              <span class="stat-pill-label">Budget Planning</span>
+            </div>
+          </div>
+
+          <div class="stat-pill-item">
+            <div class="stat-pill-icon stat-pill-icon--lime" aria-hidden="true">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
+            </div>
+            <div class="stat-pill-text">
+              <span class="stat-pill-num">100%</span>
+              <span class="stat-pill-label">Free to Use</span>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- Feature Cards -->
-  <div class="features" aria-label="Features">
-    <h2 class="features__title">Everything You Need to Plan with Confidence</h2>
-    <div class="features__grid">
-      <article class="feature-card glass-card">
-        <div class="feature-card__icon" aria-hidden="true">💰</div>
-        <h3 class="feature-card__title">Smart Budget Allocator</h3>
-        <p class="feature-card__desc">AI breaks your total budget into vendor categories, with real-time tracking of spent vs. remaining.</p>
+  <!-- Features Section -->
+  <div class="features-section" aria-label="Key features">
+    <div class="section-header text-center">
+      <h2 class="section-title">
+        Everything You Need to Plan <span class="text-crimson">with Confidence</span>
+      </h2>
+      <p class="section-subtitle">
+        Powerful AI tools to turn your ideas into unforgettable celebrations.
+      </p>
+    </div>
+
+    <div class="features-grid-clean">
+      <article class="feature-card-clean">
+        <div class="feature-card-icon-wrap feature-icon--coral" aria-hidden="true">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        </div>
+        <h3 class="feature-card-title">Smart Budget Allocator</h3>
+        <p class="feature-card-desc">AI breaks your total budget into vendor categories, with real-time tracking of spent vs. remaining.</p>
+        <button class="feature-card-arrow feature-arrow--coral" aria-label="Explore Smart Budget Allocator" onclick="window.app?.quickNavigate('budget')">→</button>
       </article>
-      <article class="feature-card glass-card">
-        <div class="feature-card__icon" aria-hidden="true">📋</div>
-        <h3 class="feature-card__title">Vendor Checklist</h3>
-        <p class="feature-card__desc">Auto-generated vendor lists tailored to your event type, with cost estimates and booking status.</p>
+
+      <article class="feature-card-clean">
+        <div class="feature-card-icon-wrap feature-icon--lavender" aria-hidden="true">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="2"/><path d="m9 14 2 2 4-4"/></svg>
+        </div>
+        <h3 class="feature-card-title">Vendor Checklist</h3>
+        <p class="feature-card-desc">Auto-generated vendor lists tailored to your event type, with cost estimates and booking status.</p>
+        <button class="feature-card-arrow feature-arrow--lavender" aria-label="Explore Vendor Checklist" onclick="window.app?.quickNavigate('vendors')">→</button>
       </article>
-      <article class="feature-card glass-card">
-        <div class="feature-card__icon" aria-hidden="true">📅</div>
-        <h3 class="feature-card__title">Timeline & Countdown</h3>
-        <p class="feature-card__desc">Month-by-month task planner that works backwards from your event date. Never miss a deadline.</p>
+
+      <article class="feature-card-clean">
+        <div class="feature-card-icon-wrap feature-icon--lime" aria-hidden="true">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        </div>
+        <h3 class="feature-card-title">Timeline & Countdown</h3>
+        <p class="feature-card-desc">Month-by-month task planner that works backwards from your event date. Never miss a deadline.</p>
+        <button class="feature-card-arrow feature-arrow--lime" aria-label="Explore Timeline & Countdown" onclick="window.app?.quickNavigate('timeline')">→</button>
       </article>
-      <article class="feature-card glass-card">
-        <div class="feature-card__icon" aria-hidden="true">💡</div>
-        <h3 class="feature-card__title">Personalized Ideas</h3>
-        <p class="feature-card__desc">Get AI-curated themes, décor, catering, and entertainment ideas matched to your preferences and budget.</p>
+
+      <article class="feature-card-clean">
+        <div class="feature-card-icon-wrap feature-icon--chartreuse" aria-hidden="true">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg>
+        </div>
+        <h3 class="feature-card-title">Personalized Ideas</h3>
+        <p class="feature-card-desc">Get AI-curated themes, décor, catering, and entertainment ideas matched to your preferences and budget.</p>
+        <button class="feature-card-arrow feature-arrow--chartreuse" aria-label="Explore Personalized Ideas" onclick="window.app?.quickNavigate('ideas')">→</button>
       </article>
-      <article class="feature-card glass-card">
-        <div class="feature-card__icon" aria-hidden="true">💬</div>
-        <h3 class="feature-card__title">AI Event Concierge</h3>
-        <p class="feature-card__desc">Chat with EventGenie anytime. Ask for cost-saving tips, vendor advice, or inspiration.</p>
+
+      <article class="feature-card-clean">
+        <div class="feature-card-icon-wrap feature-icon--pink" aria-hidden="true">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        </div>
+        <h3 class="feature-card-title">AI Event Concierge</h3>
+        <p class="feature-card-desc">Chat with EventGenie anytime. Ask for cost-saving tips, vendor advice, or inspiration.</p>
+        <button class="feature-card-arrow feature-arrow--pink" aria-label="Explore AI Event Concierge" onclick="window.app?.quickNavigate('chat')">→</button>
       </article>
-      <article class="feature-card glass-card">
-        <div class="feature-card__icon" aria-hidden="true">💾</div>
-        <h3 class="feature-card__title">Save & Resume</h3>
-        <p class="feature-card__desc">All plans saved locally in your browser. Pick up exactly where you left off, every time.</p>
+
+      <article class="feature-card-clean">
+        <div class="feature-card-icon-wrap feature-icon--lavender" aria-hidden="true">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/></svg>
+        </div>
+        <h3 class="feature-card-title">Save & Resume</h3>
+        <p class="feature-card-desc">All plans saved locally in your browser. Pick up exactly where you left off, every time.</p>
+        <button class="feature-card-arrow feature-arrow--lavender" aria-label="Explore Save & Resume" onclick="window.app?.quickNavigate('plans')">→</button>
       </article>
     </div>
   </div>
 
-  <!-- Event Type Showcase -->
-  <div class="event-types-showcase" aria-label="Supported event types">
-    <h2 class="features__title">Three Event Types, Infinite Possibilities</h2>
-    <div class="event-types-showcase__grid">
-      <div class="event-type-showcase-card" style="--accent: #CBB3E8">
-        <span class="event-type-showcase-card__icon" aria-hidden="true">💍</span>
-        <h3>Weddings</h3>
-        <p>Venue, catering, photography, florist, DJ, invitations & more — a 12-month plan awaits.</p>
-      </div>
-      <div class="event-type-showcase-card" style="--accent: #E34234">
-        <span class="event-type-showcase-card__icon" aria-hidden="true">🎂</span>
-        <h3>Birthday Parties</h3>
-        <p>Cake, entertainment, décor, favors — plan the perfect celebration from 2 months out.</p>
-      </div>
-      <div class="event-type-showcase-card" style="--accent: #BFE23A">
-        <span class="event-type-showcase-card__icon" aria-hidden="true">🏘️</span>
-        <h3>Community Events</h3>
-        <p>Permits, AV, food trucks, volunteers, marketing — orchestrate a community gathering with confidence.</p>
-      </div>
+  <!-- Three Event Types Showcase Section -->
+  <div class="event-types-section" aria-label="Supported event types">
+    <div class="section-header text-center">
+      <h2 class="section-title">
+        Three Event Types, <span class="text-crimson">Infinite Possibilities</span> <span class="spark-mark" aria-hidden="true">彡</span>
+      </h2>
+      <p class="section-subtitle">
+        Different celebrations. Same powerful AI planning.
+      </p>
+    </div>
+
+    <div class="event-showcase-grid">
+      <!-- Wedding Card -->
+      <article class="showcase-card showcase-card--wedding">
+        <div class="showcase-img-wrap">
+          <img src="images/wedding_banner.jpg" alt="Romantic wedding ceremony setup on sunny beach" class="showcase-img" />
+        </div>
+        <div class="showcase-body">
+          <div class="showcase-header">
+            <div class="showcase-icon-badge showcase-icon--wedding" aria-hidden="true">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="8" cy="12" r="5"/><circle cx="16" cy="12" r="5"/></svg>
+            </div>
+            <h3 class="showcase-title">Weddings</h3>
+          </div>
+          <p class="showcase-desc">Venue, catering, photography, florist, DJ, invitations & more — a 12-month plan awaits.</p>
+          <button class="btn btn--block btn--wedding" onclick="window.app?.startPlanForType('wedding')">
+            Plan Your Wedding →
+          </button>
+        </div>
+      </article>
+
+      <!-- Birthday Card -->
+      <article class="showcase-card showcase-card--birthday">
+        <div class="showcase-img-wrap">
+          <img src="images/birthday_banner.jpg" alt="Festive birthday cake and gift boxes setup" class="showcase-img" />
+        </div>
+        <div class="showcase-body">
+          <div class="showcase-header">
+            <div class="showcase-icon-badge showcase-icon--birthday" aria-hidden="true">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-8a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8"/><path d="M4 16s.5-1 2-1 2.5 2 4 2 2.5-2 4-2 2.5 2 4 2 2-1 2-1"/><path d="M2 21h20"/><path d="M7 8v2"/><path d="M12 8v2"/><path d="M17 8v2"/><path d="M7 4h.01"/><path d="M12 4h.01"/><path d="M17 4h.01"/></svg>
+            </div>
+            <h3 class="showcase-title">Birthday Parties</h3>
+          </div>
+          <p class="showcase-desc">Cake, entertainment, décor, favors — plan the perfect celebration from 2 months out.</p>
+          <button class="btn btn--block btn--birthday" onclick="window.app?.startPlanForType('birthday')">
+            Plan a Birthday →
+          </button>
+        </div>
+      </article>
+
+      <!-- Community Card -->
+      <article class="showcase-card showcase-card--community">
+        <div class="showcase-img-wrap">
+          <img src="images/community_banner.jpg" alt="Lively outdoor community festival in park" class="showcase-img" />
+        </div>
+        <div class="showcase-body">
+          <div class="showcase-header">
+            <div class="showcase-icon-badge showcase-icon--community" aria-hidden="true">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            </div>
+            <h3 class="showcase-title">Community Events</h3>
+          </div>
+          <p class="showcase-desc">Permits, AV, food trucks, volunteers, marketing — orchestrate a community gathering with confidence.</p>
+          <button class="btn btn--block btn--community" onclick="window.app?.startPlanForType('community')">
+            Plan a Community Event →
+          </button>
+        </div>
+      </article>
     </div>
   </div>
 </section>
@@ -528,6 +682,48 @@
 </section>
 
 </main>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     FOOTER
+═══════════════════════════════════════════════════════════════════════════ -->
+<footer class="app-footer" role="contentinfo">
+  <div class="app-footer__inner">
+    <div class="app-footer__top">
+      <div class="app-footer__brand">
+        <a href="#" class="app-footer__logo" data-nav="landing" aria-label="EventGenie home">
+          <svg class="navbar__logo-svg" width="26" height="26" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path d="M16 2L18.8 11.2L28 14L18.8 16.8L16 26L13.2 16.8L4 14L13.2 11.2L16 2Z" fill="#E10600"/>
+            <path d="M23 6L24.5 10L28.5 11.5L24.5 13L23 17L21.5 13L17.5 11.5L21.5 10L23 6Z" fill="#E34234" opacity="0.85"/>
+            <path d="M8 18L9 21L12 22L9 23L8 26L7 23L4 22L7 21L8 18Z" fill="#BFE23A"/>
+          </svg>
+          <span class="app-footer__logo-text">EventGenie</span>
+        </a>
+        <p class="app-footer__tagline">
+          AI-powered celebration & event planner. Intelligent budgets, timelines, vendor checklists, and creative ideas in seconds.
+        </p>
+      </div>
+
+      <div class="app-footer__actions">
+        <a href="https://github.com/Saurabhtbj1201/EventGenie-AI-Powered-Celebration-Event-Planner" target="_blank" rel="noopener noreferrer" class="btn-github-star" aria-label="Star EventGenie on GitHub">
+          <svg class="btn-github-star__icon" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/>
+          </svg>
+          <span class="btn-github-star__text">Star on GitHub</span>
+          <span class="btn-github-star__star">★</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="app-footer__bottom">
+      <p class="app-footer__copyright">
+        All rights reserved.
+      </p>
+      <p class="app-footer__credit">
+        Made with <span class="heart-icon" aria-label="love">❤️</span> by <a href="https://www.gu-saurabh.tech/" target="_blank" rel="noopener noreferrer" class="creator-link">Saurabh</a>
+      </p>
+    </div>
+  </div>
+</footer>
 
 <!-- Toast container (injected by ui.js) -->
 <div id="toast-container" aria-label="Notifications" aria-live="polite"></div>

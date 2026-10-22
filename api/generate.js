@@ -8,8 +8,12 @@
  * Returns: { result: string }
  */
 
-const GEMINI_MODEL   = 'gemini-2.0-flash';
-const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`;
+const PRIMARY_MODEL  = 'gemini-2.5-flash';
+const FALLBACK_MODELS = ['gemini-3.8-flash', 'gemini-flash-latest'];
+
+function getGeminiUrl(model) {
+  return `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`;
+}
 
 export default async function handler(req, res) {
   // ── CORS Headers ────────────────────────────────────────────────────────────
@@ -71,35 +75,41 @@ export default async function handler(req, res) {
     requestBody.generationConfig.responseMimeType = 'application/json';
   }
 
-  // ── Call Gemini ──────────────────────────────────────────────────────────────
-  try {
-    const geminiRes = await fetch(`${GEMINI_API_URL}?key=${apiKey}`, {
-      method:  'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body:    JSON.stringify(requestBody)
-    });
+  // ── Call Gemini (with automatic model fallback) ───────────────────────────
+  const candidateModels = [PRIMARY_MODEL, ...FALLBACK_MODELS];
+  let lastError = null;
 
-    if (!geminiRes.ok) {
-      const errText = await geminiRes.text();
-      console.error(`Gemini API error ${geminiRes.status}:`, errText);
-      return res.status(502).json({
-        error: `Upstream AI service error: ${geminiRes.status}`
+  for (const model of candidateModels) {
+    try {
+      const url = `${getGeminiUrl(model)}?key=${apiKey}`;
+      const geminiRes = await fetch(url, {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify(requestBody)
       });
+
+      if (!geminiRes.ok) {
+        const errText = await geminiRes.text();
+        console.warn(`Gemini (${model}) returned ${geminiRes.status}:`, errText);
+        lastError = `Gemini (${model}): ${geminiRes.status} ${errText}`;
+        continue; // Try next model
+      }
+
+      const data = await geminiRes.json();
+      const result = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+
+      if (result !== undefined && result !== null) {
+        return res.status(200).json({ result, modelUsed: model });
+      }
+    } catch (err) {
+      console.warn(`Error contacting Gemini (${model}):`, err.message);
+      lastError = err.message;
     }
-
-    const data = await geminiRes.json();
-
-    // Extract text from Gemini response
-    const result = data?.candidates?.[0]?.content?.parts?.[0]?.text;
-    if (result === undefined || result === null) {
-      console.error('Unexpected Gemini response shape:', JSON.stringify(data).slice(0, 500));
-      return res.status(502).json({ error: 'Unexpected response from AI service.' });
-    }
-
-    return res.status(200).json({ result });
-
-  } catch (err) {
-    console.error('Error calling Gemini API:', err);
-    return res.status(500).json({ error: 'Failed to connect to AI service.' });
   }
+
+  console.error('All Gemini model candidates failed. Last error:', lastError);
+  return res.status(502).json({
+    error: 'AI service currently unavailable. Please check API key or quota.',
+    details: lastError
+  });
 }

@@ -6,7 +6,8 @@
   "scripts": {
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js --coverage",
     "test:watch": "node --experimental-vm-modules node_modules/jest/bin/jest.js --watch",
-    "dev": "npx serve . -p 3000"
+    "dev": "node server.js",
+    "start": "node server.js"
   },
   "jest": {
     "testEnvironment": "node",

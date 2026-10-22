@@ -576,8 +576,15 @@ export async function sendChatMessage(message) {
     }
   } catch (err) {
     thinking.remove();
+    console.error('Chat error:', err);
+    let errorMsg = 'Sorry, I had trouble connecting. Please try again. 🙏';
+    if (err.message && err.message.includes('404')) {
+      errorMsg = '⚠️ <strong>Server API not detected:</strong> Please run <code>npm run dev</code> to start the EventGenie local server with Gemini AI support.';
+    } else if (err.message && err.message.includes('API key')) {
+      errorMsg = `⚠️ <strong>Configuration notice:</strong> ${err.message}`;
+    }
     const errBubble = document.createElement('div');
-    errBubble.innerHTML = renderChatBubble('ai', 'Sorry, I had trouble connecting. Please try again. 🙏');
+    errBubble.innerHTML = renderChatBubble('ai', errorMsg);
     chatList.appendChild(errBubble.firstElementChild);
   }
 
@@ -656,6 +663,47 @@ export function startNewPlan() {
   showView('wizard');
 }
 
+export function startPlanForType(type) {
+  _resetWizard();
+  showView('wizard');
+  const card = document.querySelector(`.event-type-card[data-type="${type}"]`);
+  if (card) {
+    card.click();
+    nextStep();
+  }
+}
+
+export function openMyPlans() {
+  renderSavedPlans();
+  showView('plans');
+}
+
+export function quickNavigate(target) {
+  const activePlan = getActivePlan();
+  if (target === 'plans') {
+    openMyPlans();
+    return;
+  }
+  if (target === 'chat') {
+    showView('chat');
+    return;
+  }
+  if (!activePlan) {
+    startNewPlan();
+    return;
+  }
+  showView('dashboard');
+  if (target === 'budget') {
+    document.querySelector('.tab-btn[data-tab="budget"]')?.click();
+  } else if (target === 'vendors') {
+    document.querySelector('.tab-btn[data-tab="vendors"]')?.click();
+  } else if (target === 'timeline') {
+    document.querySelector('.tab-btn[data-tab="timeline"]')?.click();
+  } else if (target === 'ideas') {
+    document.querySelector('.tab-btn[data-tab="ideas"]')?.click();
+  }
+}
+
 // ─── Countdown Timer ──────────────────────────────────────────────────────────
 
 function _setupCountdown() {
@@ -687,6 +735,7 @@ window.app = {
   renderVendors, toggleTaskDone, renderTimeline,
   regenerateIdeas, sendChatMessage,
   renderSavedPlans, openPlan, confirmDeletePlan, startNewPlan,
+  startPlanForType, openMyPlans, quickNavigate
 };
 
 // ─── Boot ─────────────────────────────────────────────────────────────────────

@@ -18,13 +18,31 @@
 export async function callGemini(prompt, systemPrompt, format = 'text', retries = 2) {
   const endpoint = '/api/generate';
 
+  // 1. Check for client-side API key override (useful for static hosting / GitHub Pages)
+  const clientKey = typeof localStorage !== 'undefined'
+    ? (localStorage.getItem('gemini_api_key') || localStorage.getItem('eventgenie_gemini_key'))
+    : null;
+
   for (let attempt = 0; attempt <= retries; attempt++) {
     try {
+      // If client key is explicitly configured and server endpoint failed previously, call Gemini directly
+      if (clientKey && attempt > 0) {
+        return await _callGeminiDirect(prompt, systemPrompt, format, clientKey);
+      }
+
       const response = await fetch(endpoint, {
         method:  'POST',
         headers: { 'Content-Type': 'application/json' },
         body:    JSON.stringify({ prompt, systemPrompt, format })
       });
+
+      if (response.status === 404) {
+        // Dev server is static-only (e.g. 'serve' or Live Server)
+        if (clientKey) {
+          return await _callGeminiDirect(prompt, systemPrompt, format, clientKey);
+        }
+        throw new Error('Endpoint /api/generate returned 404. Start the app with "npm run dev" to enable local AI proxy, or configure a Gemini API key.');
+      }
 
       if (!response.ok) {
         const errorBody = await response.text();
@@ -40,11 +58,54 @@ export async function callGemini(prompt, systemPrompt, format = 'text', retries 
       return text;
 
     } catch (err) {
-      if (attempt === retries) throw err;
+      // Do not retry on 404 if no client key is available
+      if (err.message.includes('404')) throw err;
+      if (attempt === retries) {
+        if (clientKey) {
+          try {
+            return await _callGeminiDirect(prompt, systemPrompt, format, clientKey);
+          } catch (directErr) {
+            throw err;
+          }
+        }
+        throw err;
+      }
       // Exponential backoff: 500ms, 1000ms
       await _sleep(500 * Math.pow(2, attempt));
     }
   }
+}
+
+/**
+ * Direct browser-to-Gemini fallback (for static hosts or offline test keys).
+ */
+async function _callGeminiDirect(prompt, systemPrompt, format, apiKey) {
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
+  const requestBody = {
+    contents: [{ role: 'user', parts: [{ text: prompt }] }],
+    generationConfig: { temperature: 0.7, maxOutputTokens: 2048 }
+  };
+  if (systemPrompt) {
+    requestBody.systemInstruction = { parts: [{ text: systemPrompt }] };
+  }
+  if (format === 'json') {
+    requestBody.generationConfig.responseMimeType = 'application/json';
+  }
+
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(requestBody)
+  });
+
+  if (!res.ok) {
+    const errText = await res.text();
+    throw new Error(`Direct Gemini API error ${res.status}: ${errText}`);
+  }
+
+  const data = await res.json();
+  const text = data?.candidates?.[0]?.content?.parts?.[0]?.text || '';
+  return format === 'json' ? _safeParseJSON(text) : text;
 }
 
 // ─── Budget Breakdown ─────────────────────────────────────────────────────────
