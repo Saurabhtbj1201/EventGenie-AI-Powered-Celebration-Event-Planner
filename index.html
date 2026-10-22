@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="EventGenie — AI-powered celebration and event planner for weddings, birthdays, and community events. Get smart budgets, vendor checklists, timelines, and personalized ideas." />
+  <title>EventGenie — AI Event Planner</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     NAVIGATION
+═══════════════════════════════════════════════════════════════════════════ -->
+<header class="navbar" role="banner">
+  <div class="navbar__inner">
+    <a href="#" class="navbar__logo" aria-label="EventGenie home" data-nav="landing">
+      <span class="navbar__logo-icon" aria-hidden="true">✨</span>
+      <span class="navbar__logo-text">EventGenie</span>
+    </a>
+    <nav class="navbar__links" aria-label="Main navigation">
+      <a href="#" class="nav__link" data-nav="dashboard" aria-label="Go to Dashboard">Dashboard</a>
+      <a href="#" class="nav__link" data-nav="plans"     aria-label="View saved plans">My Plans</a>
+      <a href="#" class="nav__link" data-nav="chat"      aria-label="Chat with AI">AI Chat</a>
+    </nav>
+    <button class="btn btn--primary btn--sm navbar__cta" data-nav="wizard" onclick="window.app?.startNewPlan()">
+      + New Plan
+    </button>
+  </div>
+</header>
+
+<main id="main-content" tabindex="-1">
+
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     VIEW 1: LANDING PAGE
+═══════════════════════════════════════════════════════════════════════════ -->
+<section id="view-landing" class="view view--active" aria-label="Landing page">
+  <div class="hero">
+    <!-- Decorative orbs -->
+    <div class="hero__orb hero__orb--1" aria-hidden="true"></div>
+    <div class="hero__orb hero__orb--2" aria-hidden="true"></div>
+    <div class="hero__orb hero__orb--3" aria-hidden="true"></div>
+
+    <div class="hero__content">
+      <div class="hero__badge">🤖 Powered by Google Gemini AI</div>
+      <h1 class="hero__title">Plan Your Perfect<br/><span class="hero__title-gradient">Celebration</span> with AI</h1>
+      <p class="hero__subtitle">From intimate birthdays to grand weddings and vibrant community events — EventGenie creates smart budgets, vendor checklists, timelines, and personalized ideas in seconds.</p>
+      <div class="hero__actions">
+        <button class="btn btn--primary btn--lg" id="btn-start-planning" aria-label="Start planning your event">
+          Start Planning Free ✨
+        </button>
+        <button class="btn btn--secondary btn--lg" data-nav="plans" onclick="document.querySelectorAll('[data-nav]').forEach(l=>l.classList.remove('nav__link--active')); window.app?.renderSavedPlans(); document.getElementById('view-landing').classList.remove('view--active'); document.getElementById('view-plans').classList.add('view--active')">
+          View My Plans
+        </button>
+      </div>
+      <div class="hero__stats" aria-label="App statistics">
+        <div class="hero__stat"><span class="hero__stat-num">3</span><span class="hero__stat-label">Event Types</span></div>
+        <div class="hero__stat-divider" aria-hidden="true"></div>
+        <div class="hero__stat"><span class="hero__stat-num">AI</span><span class="hero__stat-label">Budget Planning</span></div>
+        <div class="hero__stat-divider" aria-hidden="true"></div>
+        <div class="hero__stat"><span class="hero__stat-num">100%</span><span class="hero__stat-label">Free to Use</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Feature Cards -->
+  <div class="features" aria-label="Features">
+    <h2 class="features__title">Everything You Need to Plan with Confidence</h2>
+    <div class="features__grid">
+      <article class="feature-card glass-card">
+        <div class="feature-card__icon" aria-hidden="true">💰</div>
+        <h3 class="feature-card__title">Smart Budget Allocator</h3>
+        <p class="feature-card__desc">AI breaks your total budget into vendor categories, with real-time tracking of spent vs. remaining.</p>
+      </article>
+      <article class="feature-card glass-card">
+        <div class="feature-card__icon" aria-hidden="true">📋</div>
+        <h3 class="feature-card__title">Vendor Checklist</h3>
+        <p class="feature-card__desc">Auto-generated vendor lists tailored to your event type, with cost estimates and booking status.</p>
+      </article>
+      <article class="feature-card glass-card">
+        <div class="feature-card__icon" aria-hidden="true">📅</div>
+        <h3 class="feature-card__title">Timeline & Countdown</h3>
+        <p class="feature-card__desc">Month-by-month task planner that works backwards from your event date. Never miss a deadline.</p>
+      </article>
+      <article class="feature-card glass-card">
+        <div class="feature-card__icon" aria-hidden="true">💡</div>
+        <h3 class="feature-card__title">Personalized Ideas</h3>
+        <p class="feature-card__desc">Get AI-curated themes, décor, catering, and entertainment ideas matched to your preferences and budget.</p>
+      </article>
+      <article class="feature-card glass-card">
+        <div class="feature-card__icon" aria-hidden="true">💬</div>
+        <h3 class="feature-card__title">AI Event Concierge</h3>
+        <p class="feature-card__desc">Chat with EventGenie anytime. Ask for cost-saving tips, vendor advice, or inspiration.</p>
+      </article>
+      <article class="feature-card glass-card">
+        <div class="feature-card__icon" aria-hidden="true">💾</div>
+        <h3 class="feature-card__title">Save & Resume</h3>
+        <p class="feature-card__desc">All plans saved locally in your browser. Pick up exactly where you left off, every time.</p>
+      </article>
+    </div>
+  </div>
+
+  <!-- Event Type Showcase -->
+  <div class="event-types-showcase" aria-label="Supported event types">
+    <h2 class="features__title">Three Event Types, Infinite Possibilities</h2>
+    <div class="event-types-showcase__grid">
+      <div class="event-type-showcase-card" style="--accent: #CBB3E8">
+        <span class="event-type-showcase-card__icon" aria-hidden="true">💍</span>
+        <h3>Weddings</h3>
+        <p>Venue, catering, photography, florist, DJ, invitations & more — a 12-month plan awaits.</p>
+      </div>
+      <div class="event-type-showcase-card" style="--accent: #E34234">
+        <span class="event-type-showcase-card__icon" aria-hidden="true">🎂</span>
+        <h3>Birthday Parties</h3>
+        <p>Cake, entertainment, décor, favors — plan the perfect celebration from 2 months out.</p>
+      </div>
+      <div class="event-type-showcase-card" style="--accent: #BFE23A">
+        <span class="event-type-showcase-card__icon" aria-hidden="true">🏘️</span>
+        <h3>Community Events</h3>
+        <p>Permits, AV, food trucks, volunteers, marketing — orchestrate a community gathering with confidence.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     VIEW 2: EVENT WIZARD
+═══════════════════════════════════════════════════════════════════════════ -->
+<section id="view-wizard" class="view" aria-label="Event planning wizard" aria-hidden="true">
+  <div class="wizard">
+    <div class="wizard__header">
+      <h1 class="wizard__title">Let's Plan Your Event ✨</h1>
+      <p class="wizard__subtitle" id="step-counter">Step 1 of 4</p>
+      <!-- Step indicator -->
+      <div class="step-indicator" role="progressbar" aria-label="Wizard progress" aria-valuenow="1" aria-valuemin="1" aria-valuemax="4">
+        <div class="step-indicator__dot step-indicator__dot--active" aria-label="Step 1: Event type"></div>
+        <div class="step-indicator__line"></div>
+        <div class="step-indicator__dot" aria-label="Step 2: Event details"></div>
+        <div class="step-indicator__line"></div>
+        <div class="step-indicator__dot" aria-label="Step 3: Budget"></div>
+        <div class="step-indicator__line"></div>
+        <div class="step-indicator__dot" aria-label="Step 4: Preferences"></div>
+      </div>
+    </div>
+
+    <form id="wizard-form" class="wizard__form" novalidate aria-label="Event planning form">
+      <!-- Hidden field for event type -->
+      <input type="hidden" id="field-event-type" name="eventType" />
+
+      <!-- ── STEP 1: Event Type ──────────────────────────────────────────── -->
+      <div id="wizard-step-1" class="wizard__step" role="group" aria-labelledby="step1-title">
+        <h2 class="wizard__step-title" id="step1-title">What are you celebrating?</h2>
+        <div class="event-type-grid" role="radiogroup" aria-label="Select event type">
+          <button type="button" class="event-type-card" data-type="wedding"
+            aria-label="Wedding event type" tabindex="0">
+            <span class="event-type-card__icon" aria-hidden="true">💍</span>
+            <span class="event-type-card__label">Wedding</span>
+            <span class="event-type-card__desc">12-month planner</span>
+          </button>
+          <button type="button" class="event-type-card" data-type="birthday"
+            aria-label="Birthday party event type" tabindex="0">
+            <span class="event-type-card__icon" aria-hidden="true">🎂</span>
+            <span class="event-type-card__label">Birthday Party</span>
+            <span class="event-type-card__desc">2-month planner</span>
+          </button>
+          <button type="button" class="event-type-card" data-type="community"
+            aria-label="Community event type" tabindex="0">
+            <span class="event-type-card__icon" aria-hidden="true">🏘️</span>
+            <span class="event-type-card__label">Community Event</span>
+            <span class="event-type-card__desc">6-month planner</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- ── STEP 2: Event Details ──────────────────────────────────────── -->
+      <div id="wizard-step-2" class="wizard__step" hidden aria-hidden="true" role="group" aria-labelledby="step2-title">
+        <h2 class="wizard__step-title" id="step2-title">Tell us about your event</h2>
+        <div class="form-grid">
+          <div class="form-group form-group--full">
+            <label class="form-label" for="field-event-name">Event Name <span aria-hidden="true">*</span></label>
+            <input class="form-input" type="text" id="field-event-name" name="eventName"
+              placeholder="e.g. Sarah & Tom's Wedding" autocomplete="off"
+              aria-required="true" aria-describedby="event-name-hint" />
+            <span class="form-hint" id="event-name-hint">Give your event a memorable name</span>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="field-event-date">Event Date <span aria-hidden="true">*</span></label>
+            <input class="form-input" type="date" id="field-event-date" name="eventDate"
+              aria-required="true" />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="field-guest-count">Number of Guests <span aria-hidden="true">*</span></label>
+            <input class="form-input" type="number" id="field-guest-count" name="guestCount"
+              min="1" max="10000" placeholder="e.g. 150"
+              aria-required="true" />
+          </div>
+          <div class="form-group form-group--full">
+            <label class="form-label" for="field-venue">Venue / Location</label>
+            <input class="form-input" type="text" id="field-venue" name="venue"
+              placeholder="e.g. Garden Estate, Mumbai (or leave blank)" autocomplete="off" />
+          </div>
+        </div>
+      </div>
+
+      <!-- ── STEP 3: Budget ─────────────────────────────────────────────── -->
+      <div id="wizard-step-3" class="wizard__step" hidden aria-hidden="true" role="group" aria-labelledby="step3-title">
+        <h2 class="wizard__step-title" id="step3-title">What's your budget?</h2>
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label" for="field-currency">Currency</label>
+            <select class="form-input form-select" id="field-currency" name="currency" aria-label="Select currency">
+              <option value="INR">₹ Indian Rupee (INR)</option>
+              <option value="USD">$ US Dollar (USD)</option>
+              <option value="EUR">€ Euro (EUR)</option>
+              <option value="GBP">£ British Pound (GBP)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="field-budget">Total Budget <span aria-hidden="true">*</span></label>
+            <input class="form-input" type="number" id="field-budget" name="budget"
+              min="1000" max="100000000" placeholder="e.g. 500000"
+              aria-required="true" aria-describedby="budget-hint" />
+          </div>
+          <div class="form-group form-group--full">
+            <label class="form-label" for="budget-slider">Adjust with slider</label>
+            <input class="form-slider" type="range" id="budget-slider"
+              min="5000" max="5000000" step="5000" value="500000"
+              aria-label="Budget slider" />
+            <div class="budget-range-labels" aria-hidden="true">
+              <span>₹5K</span><span>₹50L</span>
+            </div>
+          </div>
+          <div class="form-group form-group--full">
+            <div class="budget-preview glass-card" id="budget-preview" aria-live="polite" aria-label="Budget suggestion">
+              Enter your budget to see per-guest cost estimate 💡
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── STEP 4: Preferences ────────────────────────────────────────── -->
+      <div id="wizard-step-4" class="wizard__step" hidden aria-hidden="true" role="group" aria-labelledby="step4-title">
+        <h2 class="wizard__step-title" id="step4-title">Share your vision</h2>
+        <div class="form-grid">
+          <div class="form-group form-group--full">
+            <label class="form-label" for="field-preferences">Style, Preferences & Notes</label>
+            <textarea class="form-input form-textarea" id="field-preferences" name="preferences"
+              placeholder="Describe your dream event... e.g. 'Outdoor bohemian wedding, vegetarian menu, live jazz band, romantic lighting, floral arch for ceremony'"
+              rows="5" aria-describedby="pref-hint"></textarea>
+            <span class="form-hint" id="pref-hint">The more detail you share, the more personalized your AI plan will be!</span>
+          </div>
+          <div class="form-group form-group--full">
+            <div class="pref-chips" aria-label="Quick preference suggestions">
+              <span class="pref-chip__label">Quick add:</span>
+              <button type="button" class="pref-chip" onclick="addPref('outdoor')">🌿 Outdoor</button>
+              <button type="button" class="pref-chip" onclick="addPref('vegetarian menu')">🥗 Vegetarian</button>
+              <button type="button" class="pref-chip" onclick="addPref('live music')">🎵 Live Music</button>
+              <button type="button" class="pref-chip" onclick="addPref('minimalist decor')">🤍 Minimalist</button>
+              <button type="button" class="pref-chip" onclick="addPref('kids friendly')">👶 Kids Friendly</button>
+              <button type="button" class="pref-chip" onclick="addPref('photography focus')">📸 Photo Focus</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Wizard Navigation ──────────────────────────────────────────── -->
+      <div class="wizard__nav" role="navigation" aria-label="Wizard navigation">
+        <button type="button" class="btn btn--secondary" id="btn-prev" hidden aria-label="Go to previous step">
+          ← Back
+        </button>
+        <button type="button" class="btn btn--primary" id="btn-next" aria-label="Go to next step">
+          Next Step →
+        </button>
+        <button type="button" class="btn btn--primary btn--generate" id="btn-generate" hidden
+          aria-label="Generate my event plan with AI">
+          <span class="btn__spinner" aria-hidden="true"></span>
+          ✨ Generate My Plan
+        </button>
+      </div>
+    </form>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     VIEW 3: GENERATING (Loading Screen)
+═══════════════════════════════════════════════════════════════════════════ -->
+<section id="view-generating" class="view" aria-label="Generating your plan" aria-hidden="true" aria-live="polite">
+  <div class="generating">
+    <div class="generating__orb" aria-hidden="true"></div>
+    <h1 class="generating__title">✨ EventGenie is crafting your plan...</h1>
+    <p class="generating__status" id="gen-status-text">Analyzing your preferences...</p>
+    <div class="generating__progress" role="progressbar" aria-label="Generation progress" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+      <div class="progress-bar">
+        <div class="progress-bar__fill" id="gen-progress-bar" style="width:0%"></div>
+      </div>
+    </div>
+    <div class="generating__steps" aria-hidden="true">
+      <div class="gen-step">💰 AI Budget Breakdown</div>
+      <div class="gen-step">📋 Vendor Checklist</div>
+      <div class="gen-step">💡 Creative Ideas</div>
+      <div class="gen-step">📅 Timeline Generation</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     VIEW 4: DASHBOARD
+═══════════════════════════════════════════════════════════════════════════ -->
+<section id="view-dashboard" class="view" aria-label="Event dashboard" aria-hidden="true">
+  <div class="dashboard">
+
+    <!-- Dashboard Header -->
+    <div class="dashboard__header glass-card">
+      <div class="dashboard__header-left">
+        <p class="dashboard__event-type" id="dashboard-event-type">💍 Wedding</p>
+        <h1 class="dashboard__event-name" id="dashboard-event-name">Your Event</h1>
+        <p class="dashboard__countdown" id="dashboard-countdown" aria-live="polite">Loading...</p>
+      </div>
+      <div class="dashboard__header-actions">
+        <button class="btn btn--secondary btn--sm" id="btn-new-plan" aria-label="Create a new event plan">
+          + New Plan
+        </button>
+        <button class="btn btn--primary btn--sm" onclick="document.querySelector('[data-nav=chat]').click()" aria-label="Open AI chat">
+          💬 Chat with AI
+        </button>
+      </div>
+    </div>
+
+    <!-- Stats Row -->
+    <div class="stats-row" aria-label="Event statistics">
+      <div class="stat-card glass-card">
+        <span class="stat-card__label">Total Budget</span>
+        <span class="stat-card__value" id="stat-total-budget" aria-live="polite">—</span>
+      </div>
+      <div class="stat-card glass-card">
+        <span class="stat-card__label">Estimated Spend</span>
+        <span class="stat-card__value" id="stat-spent" aria-live="polite">—</span>
+      </div>
+      <div class="stat-card glass-card">
+        <span class="stat-card__label">Remaining</span>
+        <span class="stat-card__value" id="stat-remaining" aria-live="polite">—</span>
+      </div>
+      <div class="stat-card glass-card">
+        <span class="stat-card__label">Guests</span>
+        <span class="stat-card__value" id="stat-guests" aria-live="polite">—</span>
+      </div>
+    </div>
+
+    <!-- Budget Health Bar -->
+    <div class="budget-health glass-card" aria-label="Budget health overview">
+      <div class="budget-health__header">
+        <span class="budget-health__label">Budget Used</span>
+        <span class="badge" id="budget-health-badge" aria-live="polite">Loading...</span>
+      </div>
+      <div class="progress-bar" role="progressbar" aria-label="Budget utilization" aria-valuemin="0" aria-valuemax="100">
+        <div class="progress-bar__fill" id="budget-progress-bar"></div>
+      </div>
+    </div>
+
+    <!-- Dashboard Tabs -->
+    <div class="dashboard__tabs" role="tablist" aria-label="Dashboard sections">
+      <button class="tab-btn tab-btn--active" data-tab="overview"  role="tab" aria-selected="true"  aria-controls="tab-overview">📊 Overview</button>
+      <button class="tab-btn" data-tab="vendors"   role="tab" aria-selected="false" aria-controls="tab-vendors">🏪 Vendors</button>
+      <button class="tab-btn" data-tab="timeline"  role="tab" aria-selected="false" aria-controls="tab-timeline">📅 Timeline</button>
+      <button class="tab-btn" data-tab="ideas"     role="tab" aria-selected="false" aria-controls="tab-ideas">💡 Ideas</button>
+    </div>
+
+    <!-- Tab: Overview -->
+    <div id="tab-overview" class="tab-panel" role="tabpanel" aria-label="Budget overview">
+      <h2 class="tab-panel__title">Budget Breakdown</h2>
+      <div id="budget-breakdown-container" role="list" aria-label="Budget categories">
+        <div class="skeleton skeleton--line"></div>
+        <div class="skeleton skeleton--line"></div>
+        <div class="skeleton skeleton--line"></div>
+      </div>
+    </div>
+
+    <!-- Tab: Vendors -->
+    <div id="tab-vendors" class="tab-panel" role="tabpanel" aria-label="Vendor management" hidden aria-hidden="true">
+      <div class="tab-panel__header">
+        <h2 class="tab-panel__title">Vendors</h2>
+        <span class="tab-panel__subtitle">Total Estimate: <strong id="vendors-total" aria-live="polite">—</strong></span>
+      </div>
+      <div id="vendors-container" class="vendors-grid" role="list" aria-label="Vendor list">
+        <div class="skeleton skeleton--card"></div>
+        <div class="skeleton skeleton--card"></div>
+      </div>
+      <!-- Add Vendor Form -->
+      <details class="add-vendor-details glass-card">
+        <summary class="add-vendor-summary" aria-label="Add a new vendor">+ Add New Vendor</summary>
+        <form id="add-vendor-form" class="add-vendor-form" novalidate aria-label="Add vendor form">
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label" for="new-vendor-name">Vendor Name</label>
+              <input class="form-input" type="text" id="new-vendor-name" placeholder="e.g. Royal Photography" aria-required="true" />
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="new-vendor-cost">Estimated Cost</label>
+              <input class="form-input" type="number" id="new-vendor-cost" placeholder="e.g. 25000" min="0" aria-required="true" />
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="new-vendor-priority">Priority</label>
+              <select class="form-input form-select" id="new-vendor-priority">
+                <option value="high">High</option>
+                <option value="medium" selected>Medium</option>
+                <option value="low">Low</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="new-vendor-notes">Notes</label>
+              <input class="form-input" type="text" id="new-vendor-notes" placeholder="e.g. Need early booking" />
+            </div>
+          </div>
+          <button type="button" class="btn btn--primary" onclick="window.app.addVendor()" aria-label="Add vendor to list">
+            Add Vendor
+          </button>
+        </form>
+      </details>
+    </div>
+
+    <!-- Tab: Timeline -->
+    <div id="tab-timeline" class="tab-panel" role="tabpanel" aria-label="Event timeline" hidden aria-hidden="true">
+      <div class="tab-panel__header">
+        <h2 class="tab-panel__title">Planning Timeline</h2>
+        <span class="tab-panel__subtitle" id="timeline-progress-label" aria-live="polite">Loading...</span>
+      </div>
+      <div class="progress-bar" role="progressbar" aria-label="Timeline completion" aria-valuemin="0" aria-valuemax="100">
+        <div class="progress-bar__fill" id="timeline-progress-bar"></div>
+      </div>
+      <div id="timeline-container" aria-label="Task list" aria-live="polite">
+        <div class="skeleton skeleton--line"></div>
+        <div class="skeleton skeleton--line"></div>
+        <div class="skeleton skeleton--line"></div>
+      </div>
+    </div>
+
+    <!-- Tab: Ideas -->
+    <div id="tab-ideas" class="tab-panel" role="tabpanel" aria-label="Event ideas" hidden aria-hidden="true">
+      <div class="tab-panel__header">
+        <h2 class="tab-panel__title">Personalized Ideas</h2>
+        <button class="btn btn--secondary btn--sm" onclick="window.app.regenerateIdeas()" aria-label="Generate new AI ideas">
+          🔄 Regenerate
+        </button>
+      </div>
+      <div id="ideas-container" class="ideas-grid">
+        <div id="ideas-themes"></div>
+        <div id="ideas-decor"></div>
+        <div id="ideas-catering"></div>
+        <div id="ideas-entertainment"></div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     VIEW 5: AI CHAT
+═══════════════════════════════════════════════════════════════════════════ -->
+<section id="view-chat" class="view" aria-label="AI Chat with EventGenie" aria-hidden="true">
+  <div class="chat">
+    <div class="chat__header glass-card">
+      <div class="chat__avatar" aria-hidden="true">✨</div>
+      <div>
+        <h1 class="chat__title">EventGenie AI</h1>
+        <p class="chat__status">Your personal event planning assistant</p>
+      </div>
+    </div>
+
+    <!-- Quick Chips -->
+    <div class="chat__chips" aria-label="Suggested questions">
+      <span class="chat__chips-label">Ask me:</span>
+      <button class="chat-chip" aria-label="Ask how to reduce venue cost">How can I reduce venue costs?</button>
+      <button class="chat-chip" aria-label="Ask for theme suggestions">What themes work for my event?</button>
+      <button class="chat-chip" aria-label="Ask what's due this month">What's due this month?</button>
+      <button class="chat-chip" aria-label="Ask for vendor tips">Any vendor negotiation tips?</button>
+    </div>
+
+    <!-- Chat Messages -->
+    <div id="chat-messages" class="chat__messages" role="list" aria-label="Chat conversation" aria-live="polite">
+      <!-- Welcome message -->
+      <div class="chat-bubble chat-bubble--ai" role="listitem">
+        <span class="chat-bubble__avatar" aria-hidden="true">✨</span>
+        <div class="chat-bubble__body">
+          <div class="chat-bubble__header">
+            <strong class="chat-bubble__name">EventGenie</strong>
+          </div>
+          <div class="chat-bubble__content">
+            Hi there! 👋 I'm EventGenie, your AI event planning assistant. I can help with budget tips, vendor recommendations, timeline advice, and creative ideas. What would you like to know about your event?
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Chat Input -->
+    <form id="chat-form" class="chat__input-area" aria-label="Chat input">
+      <label for="chat-input" class="sr-only">Type your message</label>
+      <input type="text" id="chat-input" class="chat__input"
+        placeholder="Ask EventGenie anything about your event..."
+        autocomplete="off"
+        aria-label="Chat message input"
+        maxlength="500" />
+      <button type="submit" class="btn btn--primary chat__send" aria-label="Send message">
+        Send ✈️
+      </button>
+    </form>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     VIEW 6: SAVED PLANS
+═══════════════════════════════════════════════════════════════════════════ -->
+<section id="view-plans" class="view" aria-label="Saved event plans" aria-hidden="true">
+  <div class="plans-page">
+    <div class="plans-page__header">
+      <h1 class="plans-page__title">My Event Plans</h1>
+      <button class="btn btn--primary" onclick="window.app.startNewPlan()" aria-label="Create a new event plan">
+        + Create New Plan
+      </button>
+    </div>
+    <div id="plans-container" class="plans-grid" role="list" aria-label="Saved plans list" aria-live="polite">
+      <div class="skeleton skeleton--card"></div>
+      <div class="skeleton skeleton--card"></div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- Toast container (injected by ui.js) -->
+<div id="toast-container" aria-label="Notifications" aria-live="polite"></div>
+
+<!-- Screen reader only utility class -->
+<style>.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}</style>
+
+<script>
+  // Preference chip helper (inline — tiny, not worth a module)
+  function addPref(text) {
+    const ta = document.getElementById('field-preferences');
+    if (!ta) return;
+    ta.value = ta.value ? ta.value + ', ' + text : text;
+    ta.focus();
+  }
+</script>
+
+<script type="module" src="js/app.js"></script>
+</body>
+</html>

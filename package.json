@@ -1,0 +1,25 @@
+{
+  "name": "eventgenie",
+  "version": "1.0.0",
+  "description": "AI-powered Celebration & Event Planner — PromptWars Challenge 5",
+  "main": "index.html",
+  "scripts": {
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js --coverage",
+    "test:watch": "node --experimental-vm-modules node_modules/jest/bin/jest.js --watch",
+    "dev": "npx serve . -p 3000"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "transform": {},
+    "moduleNameMapper": {
+      "^(\\.{1,2}/.*)\\.js$": "$1"
+    }
+  },
+  "type": "module",
+  "devDependencies": {
+    "jest": "^29.7.0"
+  },
+  "keywords": ["event-planner", "ai", "gemini", "wedding", "birthday"],
+  "author": "",
+  "license": "MIT"
+}
