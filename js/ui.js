@@ -381,7 +381,12 @@ function _getOrCreateToastContainer() {
   return container;
 }
 
-function _escapeHtml(str) {
+/**
+ * Safely escapes HTML special characters to prevent XSS.
+ * @param {string} str
+ * @returns {string} Sanitized string
+ */
+export function escapeHtml(str) {
   if (typeof str !== 'string') return String(str || '');
   return str
     .replace(/&/g, '&amp;')
@@ -390,6 +395,8 @@ function _escapeHtml(str) {
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#039;');
 }
+
+const _escapeHtml = escapeHtml;
 
 function _formatAIText(text) {
   // Convert newlines to <br> and **bold** to <strong>

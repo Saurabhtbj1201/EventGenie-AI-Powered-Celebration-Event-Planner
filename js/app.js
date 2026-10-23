@@ -7,7 +7,8 @@
 import { EVENT_TYPES, CURRENCIES, DEFAULT_SETTINGS } from './constants.js';
 import {
   savePlan, loadPlan, loadAllPlans, updatePlan, deletePlan,
-  setActivePlan, getActivePlan, getActivePlanId, loadSettings, saveSettings
+  setActivePlan, getActivePlan, getActivePlanId, loadSettings, saveSettings,
+  exportPlanJSON, importPlanJSON
 } from './storage.js';
 import { allocateBudget, calculateSpent, calculateRemaining, getBudgetHealth, validateBudget, formatCurrency, getBudgetSuggestion } from './budget.js';
 import { generateTimelineStructure, getTimelineProgress, getDaysUntilEvent, groupTasksByMonth, getOverdueTasks, subtractMonths } from './timeline.js';
@@ -15,7 +16,7 @@ import { generateBudgetBreakdown, generateVendorChecklist, generateEventIdeas, g
 import {
   showView, showToast, showConfirmModal, showLoading, hideLoading,
   renderProgressBar, renderBudgetBars, renderVendorCard,
-  renderTimelineItem, renderChatBubble, animateCounter, showAIThinking
+  renderTimelineItem, renderChatBubble, animateCounter, showAIThinking, escapeHtml
 } from './ui.js';
 
 // ─── State ────────────────────────────────────────────────────────────────────
@@ -618,8 +619,8 @@ export function renderSavedPlans() {
       <div class="plan-card glass-card ${isActive ? 'plan-card--active' : ''}">
         <div class="plan-card__icon" aria-hidden="true">${type?.icon || '🎉'}</div>
         <div class="plan-card__body">
-          <h3 class="plan-card__name">${plan.eventName}</h3>
-          <p class="plan-card__meta">${type?.label} · ${plan.guestCount} guests · ${formatCurrency(plan.totalBudget, currency)}</p>
+          <h3 class="plan-card__name">${escapeHtml(plan.eventName)}</h3>
+          <p class="plan-card__meta">${escapeHtml(type?.label || 'Event')} · ${escapeHtml(plan.guestCount)} guests · ${formatCurrency(plan.totalBudget, currency)}</p>
           <p class="plan-card__date">${days > 0 ? `${days} days away` : 'Past event'}</p>
           <div class="plan-card__progress">
             <div class="progress-bar" role="progressbar" aria-valuenow="${progress.percentage}" aria-valuemin="0" aria-valuemax="100">
@@ -629,8 +630,8 @@ export function renderSavedPlans() {
           </div>
         </div>
         <div class="plan-card__actions">
-          <button class="btn btn--primary btn--sm" onclick="window.app.openPlan('${plan.id}')" aria-label="Open plan: ${plan.eventName}">Open</button>
-          <button class="btn btn--ghost btn--sm"  onclick="window.app.confirmDeletePlan('${plan.id}')" aria-label="Delete plan: ${plan.eventName}">🗑️</button>
+          <button class="btn btn--primary btn--sm" onclick="window.app.openPlan('${escapeHtml(plan.id)}')" aria-label="Open plan: ${escapeHtml(plan.eventName)}">Open</button>
+          <button class="btn btn--ghost btn--sm"  onclick="window.app.confirmDeletePlan('${escapeHtml(plan.id)}')" aria-label="Delete plan: ${escapeHtml(plan.eventName)}">🗑️</button>
         </div>
       </div>
     `;
@@ -727,6 +728,36 @@ function _setText(id, text) {
   if (el) el.textContent = text;
 }
 
+// ─── Export & Print ───────────────────────────────────────────────────────────
+
+export function exportActivePlan() {
+  const plan = getActivePlan();
+  if (!plan) {
+    showToast('No active plan to export.', 'warning');
+    return;
+  }
+  const jsonStr = exportPlanJSON(plan.id);
+  const blob = new Blob([jsonStr], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `${(plan.eventName || 'event').toLowerCase().replace(/[^a-z0-9]/g, '_')}_plan.json`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  showToast('Event plan exported as JSON! 📥', 'success');
+}
+
+export function printActivePlan() {
+  const plan = getActivePlan();
+  if (!plan) {
+    showToast('No active plan to print.', 'warning');
+    return;
+  }
+  window.print();
+}
+
 // ─── Expose to window (for inline handlers) ───────────────────────────────────
 
 window.app = {
@@ -735,7 +766,8 @@ window.app = {
   renderVendors, toggleTaskDone, renderTimeline,
   regenerateIdeas, sendChatMessage,
   renderSavedPlans, openPlan, confirmDeletePlan, startNewPlan,
-  startPlanForType, openMyPlans, quickNavigate
+  startPlanForType, openMyPlans, quickNavigate,
+  exportActivePlan, printActivePlan
 };
 
 // ─── Boot ─────────────────────────────────────────────────────────────────────

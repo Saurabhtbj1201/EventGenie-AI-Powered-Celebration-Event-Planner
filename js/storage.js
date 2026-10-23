@@ -180,6 +180,40 @@ export function getPlanCount() {
   return loadAllPlans().length;
 }
 
+/**
+ * Exports a plan as a formatted JSON string.
+ * @param {string} planId
+ * @returns {string} Serialized JSON string
+ */
+export function exportPlanJSON(planId) {
+  const plan = loadPlan(planId);
+  if (!plan) throw new Error(`Plan with ID ${planId} not found.`);
+  return JSON.stringify(plan, null, 2);
+}
+
+/**
+ * Validates and imports a plan from a JSON string.
+ * @param {string} jsonString
+ * @returns {Object} Newly imported plan
+ */
+export function importPlanJSON(jsonString) {
+  try {
+    const data = JSON.parse(jsonString);
+    if (!data.eventName || !data.eventType) {
+      throw new Error('Invalid plan format: missing eventName or eventType.');
+    }
+    const imported = {
+      ...data,
+      id: `plan_${Date.now()}_${Math.random().toString(36).substr(2, 6)}`,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    };
+    return savePlan(imported);
+  } catch (err) {
+    throw new Error(`Failed to import plan: ${err.message}`);
+  }
+}
+
 // ─── Private Helpers ──────────────────────────────────────────────────────────
 
 /**

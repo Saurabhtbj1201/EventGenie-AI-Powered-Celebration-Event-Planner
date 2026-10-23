@@ -39,7 +39,9 @@ const {
   saveSettings,
   loadSettings,
   clearAll,
-  getPlanCount
+  getPlanCount,
+  exportPlanJSON,
+  importPlanJSON
 } = await import('../js/storage.js');
 
 // ─── Reset storage between tests ──────────────────────────────────────────────
@@ -237,6 +239,11 @@ describe('Settings', () => {
   test('returns empty object when no settings', () => {
     expect(loadSettings()).toEqual({});
   });
+
+  test('returns empty object when settings JSON is invalid', () => {
+    localStorage.setItem('eventgenie_settings', 'invalid-json{{');
+    expect(loadSettings()).toEqual({});
+  });
 });
 
 // ─── clearAll & getPlanCount ──────────────────────────────────────────────────
@@ -259,3 +266,38 @@ describe('Utility Functions', () => {
     expect(getPlanCount()).toBe(0);
   });
 });
+
+// ─── Export & Import ──────────────────────────────────────────────────────────
+
+describe('Export and Import Plans', () => {
+  test('exportPlanJSON returns valid serialized JSON string', () => {
+    const plan = savePlan({ eventName: 'Export Me', eventType: 'wedding' });
+    const jsonStr = exportPlanJSON(plan.id);
+    expect(typeof jsonStr).toBe('string');
+    const parsed = JSON.parse(jsonStr);
+    expect(parsed.eventName).toBe('Export Me');
+  });
+
+  test('exportPlanJSON throws if plan not found', () => {
+    expect(() => exportPlanJSON('non-existent-id')).toThrow(/not found/);
+  });
+
+  test('importPlanJSON validates and saves new plan', () => {
+    const validJSON = JSON.stringify({
+      eventName: 'Imported Birthday',
+      eventType: 'birthday',
+      totalBudget: 15000
+    });
+
+    const imported = importPlanJSON(validJSON);
+    expect(imported.id).toBeTruthy();
+    expect(imported.eventName).toBe('Imported Birthday');
+    expect(loadPlan(imported.id)).toBeDefined();
+  });
+
+  test('importPlanJSON throws for invalid plan schema or corrupt JSON', () => {
+    expect(() => importPlanJSON('{invalid json')).toThrow(/Failed to import/);
+    expect(() => importPlanJSON('{"totalBudget": 5000}')).toThrow(/missing eventName or eventType/);
+  });
+});
+

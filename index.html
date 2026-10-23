@@ -37,6 +37,7 @@
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
+<a href="#main-content" class="skip-link">Skip to main content</a>
 
 <!-- ═══════════════════════════════════════════════════════════════════════════
      NAVIGATION
@@ -474,6 +475,12 @@
         <p class="dashboard__countdown" id="dashboard-countdown" aria-live="polite">Loading...</p>
       </div>
       <div class="dashboard__header-actions">
+        <button class="btn btn--secondary btn--sm" id="btn-export-plan" onclick="window.app?.exportActivePlan()" aria-label="Export plan as JSON">
+          📥 Export
+        </button>
+        <button class="btn btn--secondary btn--sm" id="btn-print-plan" onclick="window.app?.printActivePlan()" aria-label="Print event plan">
+          🖨️ Print
+        </button>
         <button class="btn btn--secondary btn--sm" id="btn-new-plan" aria-label="Create a new event plan">
           + New Plan
         </button>

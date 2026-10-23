@@ -210,6 +210,18 @@ describe('validateBudget', () => {
     const { valid } = validateBudget(null, 50, 'birthday');
     expect(valid).toBe(false);
   });
+  test('returns error for budget exceeding maximum limit', () => {
+    const { valid, errors } = validateBudget(200000000, 50, 'birthday');
+    expect(valid).toBe(false);
+    expect(errors.some(e => e.includes('cannot exceed'))).toBe(true);
+  });
+
+  test('adjustBudgetSplit distributes equally when other categories sum to zero', () => {
+    const split = { venue: 10000, catering: 0, decor: 0 };
+    const adjusted = adjustBudgetSplit(split, 'venue', 4000, 10000);
+    expect(adjusted.venue).toBe(4000);
+    expect(adjusted.catering + adjusted.decor).toBe(6000);
+  });
 });
 
 // ─── formatCurrency ───────────────────────────────────────────────────────────
@@ -228,5 +240,30 @@ describe('formatCurrency', () => {
   test('rounds to whole numbers', () => {
     const result = formatCurrency(1234.56, 'INR');
     expect(result).not.toContain('.56');
+  });
+
+  test('falls back safely for unknown currency', () => {
+    const result = formatCurrency(5000, 'UNKNOWN_CURR');
+    expect(result).toBeTruthy();
+    expect(result).toContain('5,000');
+  });
+});
+
+// ─── getBudgetSuggestion ──────────────────────────────────────────────────────
+
+describe('getBudgetSuggestion', () => {
+  test('returns empty string if budget or guest count is missing', () => {
+    expect(getBudgetSuggestion(0, 50, 'wedding')).toBe('');
+    expect(getBudgetSuggestion(10000, 0, 'wedding')).toBe('');
+  });
+
+  test('returns well-funded suggestion when perHead is above threshold', () => {
+    const suggestion = getBudgetSuggestion(500000, 50, 'wedding');
+    expect(suggestion).toContain('well-funded');
+  });
+
+  test('returns warning suggestion when perHead is below threshold', () => {
+    const suggestion = getBudgetSuggestion(50000, 100, 'wedding');
+    expect(suggestion).toContain('consider increasing');
   });
 });

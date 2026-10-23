@@ -24,6 +24,14 @@ jest.unstable_mockModule('../js/constants.js', () => ({
     community: {
       milestones: [
         { monthsBefore: 6, tasks: ['Apply for permits'] },
+        { monthsBefore: 1, tasks: [
+          'Vendor payment settlement',
+          'Final caterer menu confirmation',
+          'Record promo video',
+          'Deliver flower centerpieces',
+          'Obtain park insurance permit',
+          'Recruit event volunteer security'
+        ] },
         { monthsBefore: 0, tasks: ['Event day! 🎉'] }
       ]
     }
@@ -37,7 +45,7 @@ jest.unstable_mockModule('../js/constants.js', () => ({
 
 const {
   generateTimelineStructure, getTimelineProgress, getDaysUntilEvent,
-  groupTasksByMonth, getOverdueTasks, getUpcomingTasks, subtractMonths
+  groupTasksByMonth, getOverdueTasks, getUpcomingTasks, subtractMonths, formatDate
 } = await import('../js/timeline.js');
 
 // ─── generateTimelineStructure ────────────────────────────────────────────────
@@ -234,6 +242,20 @@ describe('getUpcomingTasks', () => {
     const tasks = [{ dueDate: in2Days.toISOString().split('T')[0], done: true, task: 'Done' }];
     expect(getUpcomingTasks(tasks, 7)).toHaveLength(0);
   });
+
+  test('handles non-array input in getUpcomingTasks gracefully', () => {
+    expect(getUpcomingTasks(null)).toEqual([]);
+  });
+
+  test('generates timeline structure with diverse inferred categories', () => {
+    const generated = generateTimelineStructure('2026-12-01', 'community');
+    expect(generated.some(t => t.category === 'Finance')).toBe(true);
+    expect(generated.some(t => t.category === 'Catering')).toBe(true);
+    expect(generated.some(t => t.category === 'Media')).toBe(true);
+    expect(generated.some(t => t.category === 'Décor')).toBe(true);
+    expect(generated.some(t => t.category === 'Legal')).toBe(true);
+    expect(generated.some(t => t.category === 'Logistics')).toBe(true);
+  });
 });
 
 // ─── subtractMonths ───────────────────────────────────────────────────────────
@@ -257,5 +279,16 @@ describe('subtractMonths', () => {
     const original = base.getTime();
     subtractMonths(base, 2);
     expect(base.getTime()).toBe(original);
+  });
+});
+
+// ─── formatDate ───────────────────────────────────────────────────────────────
+
+describe('formatDate', () => {
+  test('formats ISO date string into readable short format', () => {
+    const formatted = formatDate('2026-10-28');
+    expect(formatted).toBeTruthy();
+    expect(formatted).toContain('2026');
+    expect(formatted).toContain('28');
   });
 });

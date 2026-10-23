@@ -14,6 +14,22 @@
     "transform": {},
     "moduleNameMapper": {
       "^(\\.{1,2}/.*)\\.js$": "$1"
+    },
+    "collectCoverageFrom": [
+      "js/budget.js",
+      "js/constants.js",
+      "js/storage.js",
+      "js/timeline.js",
+      "js/ai.js",
+      "api/generate.js"
+    ],
+    "coverageThreshold": {
+      "global": {
+        "branches": 85,
+        "functions": 95,
+        "lines": 95,
+        "statements": 95
+      }
     }
   },
   "type": "module",
