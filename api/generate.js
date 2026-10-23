@@ -16,10 +16,12 @@ function getGeminiUrl(model) {
 }
 
 export default async function handler(req, res) {
-  // ── CORS Headers ────────────────────────────────────────────────────────────
+  // ── Security & CORS Headers ────────────────────────────────────────────────
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('X-Frame-Options', 'DENY');
 
   // ── Handle Preflight ────────────────────────────────────────────────────────
   if (req.method === 'OPTIONS') {

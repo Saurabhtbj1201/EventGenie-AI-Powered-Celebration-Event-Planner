@@ -172,10 +172,16 @@ export function renderProgressBar(percent, elementId, label) {
   const el = document.getElementById(elementId);
   if (!el) return;
   const clamped = Math.min(100, Math.max(0, percent));
-  const fill = el.querySelector('.progress-bar__fill') || el;
+  const fill = el.classList?.contains('progress-bar__fill') ? el : (el.querySelector('.progress-bar__fill') || el);
   fill.style.width = `${clamped}%`;
   fill.setAttribute('aria-valuenow', clamped);
-  if (label) fill.setAttribute('aria-label', label);
+  if (el.getAttribute('role') === 'progressbar') {
+    el.setAttribute('aria-valuenow', clamped);
+    if (label) el.setAttribute('aria-label', label);
+  } else if (el.parentElement?.getAttribute('role') === 'progressbar') {
+    el.parentElement.setAttribute('aria-valuenow', clamped);
+    if (label) el.parentElement.setAttribute('aria-label', label);
+  }
 }
 
 // ─── Budget Bars ──────────────────────────────────────────────────────────────
@@ -241,12 +247,12 @@ export function renderVendorCard(vendor, currency = 'INR') {
       <div class="vendor-card__cost">${formatCurrency(vendor.estimated || 0, currency)}</div>
       ${vendor.notes ? `<p class="vendor-card__notes">${_escapeHtml(vendor.notes)}</p>` : ''}
       <div class="vendor-card__actions">
-        <button class="btn btn--sm btn--secondary" onclick="window.app.toggleVendorBooked('${vendor.id}')"
-          aria-label="${vendor.booked ? 'Mark as pending' : 'Mark as booked'}: ${vendor.name}">
+        <button class="btn btn--sm btn--secondary" data-action="toggle-vendor" data-id="${_escapeHtml(vendor.id || '')}"
+          aria-label="${vendor.booked ? 'Mark as pending' : 'Mark as booked'}: ${_escapeHtml(vendor.name || '')}">
           ${vendor.booked ? 'Mark Pending' : 'Mark Booked'}
         </button>
-        <button class="btn btn--sm btn--ghost" onclick="window.app.deleteVendor('${vendor.id}')"
-          aria-label="Delete vendor: ${vendor.name}">
+        <button class="btn btn--sm btn--ghost" data-action="delete-vendor" data-id="${_escapeHtml(vendor.id || '')}"
+          aria-label="Delete vendor: ${_escapeHtml(vendor.name || '')}">
           🗑️
         </button>
       </div>
@@ -273,7 +279,7 @@ export function renderTimelineItem(task, isOverdue = false) {
       <label class="timeline-item__check" for="task-${_escapeHtml(task.id)}">
         <input type="checkbox" id="task-${_escapeHtml(task.id)}"
           ${task.done ? 'checked' : ''}
-          onchange="window.app.toggleTaskDone('${task.id}')"
+          data-action="toggle-task" data-id="${_escapeHtml(task.id)}"
           aria-label="Mark task as done: ${_escapeHtml(task.task)}" />
         <span class="timeline-item__label">${_escapeHtml(task.task)}</span>
       </label>

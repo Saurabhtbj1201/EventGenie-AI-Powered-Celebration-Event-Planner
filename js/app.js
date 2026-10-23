@@ -33,6 +33,9 @@ let _settings = { ...DEFAULT_SETTINGS };
 function initApp() {
   _settings = { ...DEFAULT_SETTINGS, ...loadSettings() };
   _setupNavigation();
+  _setupActionDelegation();
+  _setupDashboardActions();
+  _setupPlansActions();
   _setupWizard();
   _setupChat();
   _setupCountdown();
@@ -47,7 +50,7 @@ function initApp() {
   }
 }
 
-// ─── Navigation ───────────────────────────────────────────────────────────────
+// ─── Navigation & Global Actions ─────────────────────────────────────────────
 
 function _setupNavigation() {
   document.querySelectorAll('[data-nav]').forEach(link => {
@@ -55,6 +58,7 @@ function _setupNavigation() {
       e.preventDefault();
       const viewId = link.dataset.nav;
       if (viewId === 'plans') renderSavedPlans();
+      if (viewId === 'wizard') _resetWizard();
       showView(viewId);
     });
   });
@@ -72,19 +76,155 @@ function _setupNavigation() {
   });
 }
 
+function _setupActionDelegation() {
+  // Delegate clicks on quick navigation and event type cards across the page
+  document.addEventListener('click', (e) => {
+    const quickNavBtn = e.target.closest('[data-action="quick-nav"]');
+    if (quickNavBtn) {
+      e.preventDefault();
+      const target = quickNavBtn.dataset.target;
+      if (target) quickNavigate(target);
+      return;
+    }
+
+    const startTypeBtn = e.target.closest('[data-action="start-type"]');
+    if (startTypeBtn) {
+      e.preventDefault();
+      const type = startTypeBtn.dataset.type;
+      if (type) startPlanForType(type);
+      return;
+    }
+
+    const prefChip = e.target.closest('[data-pref]');
+    if (prefChip) {
+      e.preventDefault();
+      const pref = prefChip.dataset.pref;
+      const ta = document.getElementById('field-preferences');
+      if (ta && pref) {
+        ta.value = ta.value ? `${ta.value}, ${pref}` : pref;
+        ta.focus();
+      }
+      return;
+    }
+  });
+
+  // Delegate vendor actions
+  document.getElementById('vendors-container')?.addEventListener('click', (e) => {
+    const toggleBtn = e.target.closest('[data-action="toggle-vendor"]');
+    if (toggleBtn) {
+      const vendorId = toggleBtn.dataset.id;
+      if (vendorId) toggleVendorBooked(vendorId);
+      return;
+    }
+    const deleteBtn = e.target.closest('[data-action="delete-vendor"]');
+    if (deleteBtn) {
+      const vendorId = deleteBtn.dataset.id;
+      if (vendorId) deleteVendor(vendorId);
+      return;
+    }
+  });
+
+  // Delegate timeline task toggle
+  document.getElementById('timeline-container')?.addEventListener('change', (e) => {
+    const checkbox = e.target.closest('[data-action="toggle-task"]');
+    if (checkbox) {
+      const taskId = checkbox.dataset.id;
+      if (taskId) toggleTaskDone(taskId);
+    }
+  });
+
+  // Delegate saved plans actions
+  document.getElementById('plans-container')?.addEventListener('click', (e) => {
+    const openBtn = e.target.closest('[data-action="open-plan"]');
+    if (openBtn) {
+      const planId = openBtn.dataset.id;
+      if (planId) openPlan(planId);
+      return;
+    }
+    const deleteBtn = e.target.closest('[data-action="delete-plan"]');
+    if (deleteBtn) {
+      const planId = deleteBtn.dataset.id;
+      if (planId) confirmDeletePlan(planId);
+      return;
+    }
+    const startBtn = e.target.closest('[data-action="start-new-plan"]');
+    if (startBtn) {
+      startNewPlan();
+      return;
+    }
+  });
+}
+
+function _setupDashboardActions() {
+  document.getElementById('btn-export-plan')?.addEventListener('click', () => exportActivePlan());
+  document.getElementById('btn-print-plan')?.addEventListener('click', () => printActivePlan());
+  document.getElementById('btn-dash-chat')?.addEventListener('click', () => showView('chat'));
+  document.getElementById('btn-add-vendor')?.addEventListener('click', () => addVendor());
+  document.getElementById('btn-regenerate-ideas')?.addEventListener('click', () => regenerateIdeas());
+}
+
+function _setupPlansActions() {
+  document.getElementById('btn-create-plan')?.addEventListener('click', () => startNewPlan());
+
+  const fileInput = document.getElementById('import-plan-file');
+  document.getElementById('btn-import-plan')?.addEventListener('click', () => {
+    fileInput?.click();
+  });
+
+  fileInput?.addEventListener('change', async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    try {
+      const text = await file.text();
+      const imported = importPlanJSON(text);
+      if (imported) {
+        showToast(`Plan "${imported.eventName}" imported successfully! 🎉`, 'success');
+        renderSavedPlans();
+        openPlan(imported.id);
+      } else {
+        showToast('Failed to import plan: Invalid JSON format.', 'error');
+      }
+    } catch (err) {
+      showToast('Error reading plan file.', 'error');
+    }
+    e.target.value = '';
+  });
+}
+
 // ─── Wizard ───────────────────────────────────────────────────────────────────
 
 function _setupWizard() {
-  // Event type cards
-  document.querySelectorAll('.event-type-card').forEach(card => {
+  // Event type cards (ARIA radiogroup)
+  const cards = Array.from(document.querySelectorAll('.event-type-card'));
+  cards.forEach((card, idx) => {
     card.addEventListener('click', () => {
-      document.querySelectorAll('.event-type-card').forEach(c => c.classList.remove('event-type-card--selected'));
+      cards.forEach(c => {
+        c.classList.remove('event-type-card--selected');
+        c.setAttribute('aria-checked', 'false');
+      });
       card.classList.add('event-type-card--selected');
+      card.setAttribute('aria-checked', 'true');
       document.getElementById('field-event-type').value = card.dataset.type;
       _updateWizardNav();
     });
-    // Keyboard support
-    card.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') card.click(); });
+
+    // Keyboard support: Enter, Space, Left/Right/Up/Down arrow navigation
+    card.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        card.click();
+      } else if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+        e.preventDefault();
+        const nextCard = cards[(idx + 1) % cards.length];
+        nextCard.focus();
+        nextCard.click();
+      } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+        e.preventDefault();
+        const prevCard = cards[(idx - 1 + cards.length) % cards.length];
+        prevCard.focus();
+        prevCard.click();
+      }
+    });
   });
 
   // Budget slider sync
@@ -107,7 +247,10 @@ function _setupWizard() {
 function _resetWizard() {
   _currentStep = 1;
   document.getElementById('wizard-form')?.reset();
-  document.querySelectorAll('.event-type-card').forEach(c => c.classList.remove('event-type-card--selected'));
+  document.querySelectorAll('.event-type-card').forEach(c => {
+    c.classList.remove('event-type-card--selected');
+    c.setAttribute('aria-checked', 'false');
+  });
   _renderStep(1);
 }
 
@@ -182,6 +325,13 @@ function _renderStep(step) {
   }
 
   // Update step indicator
+  const stepTitles = ['Event Type', 'Details', 'Budget', 'Preferences'];
+  const progressbar = document.querySelector('.step-indicator[role="progressbar"]');
+  if (progressbar) {
+    progressbar.setAttribute('aria-valuenow', step);
+    progressbar.setAttribute('aria-label', `Step ${step} of ${TOTAL_STEPS}: ${stepTitles[step - 1] || ''}`);
+  }
+
   document.querySelectorAll('.step-indicator__dot').forEach((dot, i) => {
     dot.classList.toggle('step-indicator__dot--active', i + 1 === step);
     dot.classList.toggle('step-indicator__dot--done',   i + 1 < step);
@@ -603,7 +753,7 @@ export function renderSavedPlans() {
     container.innerHTML = `
       <div class="empty-state">
         <p class="empty-state__text">No saved plans yet.</p>
-        <button class="btn btn--primary" onclick="window.app.startNewPlan()">Create Your First Plan</button>
+        <button class="btn btn--primary" data-action="start-new-plan">Create Your First Plan</button>
       </div>`;
     return;
   }
@@ -630,8 +780,8 @@ export function renderSavedPlans() {
           </div>
         </div>
         <div class="plan-card__actions">
-          <button class="btn btn--primary btn--sm" onclick="window.app.openPlan('${escapeHtml(plan.id)}')" aria-label="Open plan: ${escapeHtml(plan.eventName)}">Open</button>
-          <button class="btn btn--ghost btn--sm"  onclick="window.app.confirmDeletePlan('${escapeHtml(plan.id)}')" aria-label="Delete plan: ${escapeHtml(plan.eventName)}">🗑️</button>
+          <button class="btn btn--primary btn--sm" data-action="open-plan" data-id="${escapeHtml(plan.id)}" aria-label="Open plan: ${escapeHtml(plan.eventName)}">Open</button>
+          <button class="btn btn--ghost btn--sm" data-action="delete-plan" data-id="${escapeHtml(plan.id)}" aria-label="Delete plan: ${escapeHtml(plan.eventName)}">🗑️</button>
         </div>
       </div>
     `;
